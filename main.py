@@ -40,12 +40,6 @@ SMTP_USE_STARTTLS = os.getenv("SMTP_USE_STARTTLS") == "true"
 EMAIL_TO = os.getenv("EMAIL_TO")
 
 # Services you want to track
-TRAEFIK_SERVICES = [
-    "backend-contact@docker",
-    "backend-projects@docker",
-    "frontend@docker"
-]
-
 time_selection_regex = r"(?P<num>\d+)(?P<unit>\w)"
 
 prom = PrometheusConnect(url=PROM_URL, disable_ssl=False, auth=HTTPBasicAuth(PROM_USER, PROM_PASS) if PROM_USE_AUTH else None)
@@ -57,7 +51,7 @@ env = Environment(autoescape=True, loader=loader)
 time_selection = "7d"
 
 
-def query_prom(query):
+def query_prom(query: str) -> int | str:
     """Returns a single number (scalar) from Prometheus"""
     try:
         res = prom.custom_query(query)
@@ -66,7 +60,7 @@ def query_prom(query):
     except Exception as e:
         return f"Error: {e}"
 
-def query_prom_raw(query):
+def query_prom_raw(query: str) -> list:
     """Returns the raw result from Prometheus"""
     try:
         res = prom.custom_query(query)
@@ -75,7 +69,7 @@ def query_prom_raw(query):
         print(f"Prometheus Error: {e}")
         return []
 
-def query_loki(query):
+def query_loki(query: str) -> list[dict]:
     """Returns a list of dicts {message, count} from Loki"""
     try:
         # Enforce a 7-day lookback for simplicity in the template
@@ -96,7 +90,7 @@ def query_loki(query):
         return []
 
 
-def query_loki_top(selector, label, limit=10):
+def query_loki_top(selector: str, label: str, limit: int = 10) -> list[dict]:
     """
     Generic Top-N query for any label (Country, ASN, UserAgent, etc.)
     Query: topk(N, sum by (label) (count_over_time(selector [7d])))
@@ -111,7 +105,7 @@ def query_loki_top(selector, label, limit=10):
         print(f"Loki Error on {label}: {e}")
         return []
 
-def query_loki_raw(logql, limit: int = 50):
+def query_loki_raw(logql: str, limit: int = 50) -> list[dict]:
     """Fetch raw log lines from Loki over the selected time window.
 
     For log streams (e.g. '{job="fail2ban"}'), Loki returns "streams" where each stream
@@ -181,16 +175,7 @@ def get_template(path: str):
 
 def render_html(path: str):
     template = get_template(path)
-
-    start_date, end_date = get_date_range(time_selection)
-
-    return template.render(
-        time_selection=time_selection,
-        start_date=start_date,
-        end_date=end_date,
-        services=TRAEFIK_SERVICES,
-        date=datetime.now().strftime("%Y-%m-%d")
-    )
+    return template.render()
 
 
 def send_email(path: str, subject: str):
@@ -267,18 +252,25 @@ def template_dev_server(path: str, port: int):
     httpd.serve_forever()
 
 def setup_jinja_env():
+    start_date, end_date = get_date_range(time_selection)
+
+    env.globals['time_selection'] = time_selection
+    env.globals['start_date'] = start_date
+    env.globals['end_date'] = end_date
+    env.globals['date'] = datetime.now().strftime("%Y-%m-%d")
     env.globals['now'] = datetime.now(timezone.utc)
+
     env.globals['query_prom'] = query_prom
     env.globals['query_prom_raw'] = query_prom_raw
     env.globals['query_loki'] = query_loki
     env.globals['query_loki_top'] = query_loki_top
     env.globals['query_loki_raw'] = query_loki_raw
-    
+
     env.filters['to_timedelta'] = lambda x: timedelta(seconds=int(x))
-    env.filters['format_timedelta'] = format_timedelta
     env.filters['from_epoch'] = from_epoch
     env.filters['fmt_bytes'] = format_bytes
     env.filters['fmt_pct'] = format_percent
+    env.filters['fmt_timedelta'] = format_timedelta
 
 # --- MAIN ---
 if __name__ == "__main__":
