@@ -57,24 +57,24 @@ uv run main.py [command] [options]
 
 The tool requires the following environment variables to be set for email functionality. They can also be defined in a `.env` file:
 
-| Environment Variable | Description                                          |
-| -------------------- | ---------------------------------------------------- |
-| `EMAIL_TO`           | Recipient email address                              |
-| `SMTP_HOST`          | SMTP server host                                     |
-| `SMTP_PORT`          | SMTP server port                                     |
-| `SMTP_USER`          | SMTP username                                        |
-| `SMTP_PASSWORD`      | SMTP password                                        |
-| `SMTP_FROM_NAME`     | Name to display in the "From" field                  |
-| `SMTP_USE_TLS`       | Use TLS for SMTP connection (true/false)             |
-| `SMTP_USE_SSL`       | Use SSL for SMTP connection (true/false)             |
-| `LOKI_URL`           | Loki server URL                                      |
-| `LOKI_USE_AUTH`      | Use basic authentication for Loki (true/false)       |
-| `LOKI_USER`          | Loki username                                        |
-| `LOKI_PASS`          | Loki password                                        |
-| `PROM_URL`           | Prometheus server URL                                |
-| `PROM_USE_AUTH`      | Use basic authentication for Prometheus (true/false) |
-| `PROM_USER`          | Prometheus username                                  |
-| `PROM_PASS`          | Prometheus password                                  |
+| Environment Variable             | Description                                                                               |
+| -------------------------------- | ----------------------------------------------------------------------------------------- |
+| `METRIC_MEMO_RECIPIENTS`         | Recipient email addresses separated by commas                                             |
+| `METRIC_MEMO_SMTP_HOST`          | SMTP server host                                                                          |
+| `METRIC_MEMO_SMTP_PORT`          | SMTP server port (if left empty, defaults to 25 for non-TLS, 587 for TLS and 465 for SSL) |
+| `METRIC_MEMO_SMTP__USER`         | SMTP username                                                                             |
+| `METRIC_MEMO_SMTP__PASSWORD`     | SMTP password                                                                             |
+| `METRIC_MEMO_SMTP__FROM_NAME`    | Name to display in the "From" field                                                       |
+| `METRIC_MEMO_SMTP__USE_STARTTLS` | Use STARTTLS for SMTP connection (true/false)                                             |
+| `METRIC_MEMO_SMTP__USE_SSL`      | Use SSL for SMTP connection (true/false)                                                  |
+| `METRIC_MEMO_LOKI__URL`          | Loki server URL                                                                           |
+| `METRIC_MEMO_LOKI__USE_AUTH`     | Use basic authentication for Loki (true/false)                                            |
+| `METRIC_MEMO_LOKI__USER`         | Loki username                                                                             |
+| `METRIC_MEMO_LOKI__PASSWORD`     | Loki password                                                                             |
+| `METRIC_MEMO_PROM__URL`          | Prometheus server URL                                                                     |
+| `METRIC_MEMO_PROM__USE_AUTH`     | Use basic authentication for Prometheus (true/false)                                      |
+| `METRIC_MEMO_PROM__USER`         | Prometheus username                                                                       |
+| `METRIC_MEMO_PROM__PASSWORD`     | Prometheus password                                                                       |
 
 ## Jinja2 Template
 
