@@ -23,13 +23,27 @@ Some arguments are applicable to all commands:
 Send an email report with a custom subject:
 
 ```bash
-python main.py send-email --subject-template "Custom Report - {{ date }}"
+uv run main.py send-email --subject-template "Custom Report - {{ date }}"
 ```
 
 Start the template development server on a specific port:
 
 ```bash
-python main.py template-dev-server --port 8080
+uv run main.py template-dev-server --port 8080
+```
+
+## Installation
+
+This project uses [UV](https://github.com/astral-sh/uv) for dependency management. To install UV follow their instruction [here](https://github.com/astral-sh/uv#installation). Once UV is installed, you can install the project dependencies with:
+
+```bash
+uv sync
+```
+
+Once the dependencies are installed, you can run the CLI with:
+
+```bash
+uv run main.py [command] [options]
 ```
 
 ## Environment Variables
@@ -55,20 +69,21 @@ The tool requires the following environment variables to be set for email functi
 | `PROM_USER`          | Prometheus username                                  |
 | `PROM_PASS`          | Prometheus password                                  |
 
-
 ## Jinja2 Template
 
 The email report is generated using a Jinja2 HTML template. You can customize the template to fit your reporting needs. The default template file is `weekly.html.jinja`.
 The template has access to the following variables:
+
 - `time_selection`: The time range selected for the report (e.g., `7d`). This can be used in queries to Prometheus and Loki.
 - `now`: The current UTC date and time as a datetime object.
 - `date`: The current date in `YYYY-MM-DD` format.
 - `start_date`: The start date of the selected time range.
 - `end_date`: The end date of the selected time range.
 
-
 ### Functions
+
 The following functions are available within the Jinja2 template for querying data:
+
 - `query_prom(query: str)`: Executes a Prometheus query and returns the result as a single number (scalar).
 - `query_prom_raw(query: str)`: Executes a Prometheus query and returns the raw result as a list (including labels and values).
 - `query_loki(query: str)`: Executes a Loki query and returns a list of dictionaries `{message, count}`.
@@ -78,6 +93,7 @@ The following functions are available within the Jinja2 template for querying da
 ### Filters
 
 The following custom filters are available within the Jinja2 template:
+
 - `fmt_bytes(value)`: Converts a byte value into a human-readable format (e.g KB, MB, GB).
 - `fmt_pct(value)`: Formats a float value as a percentage with two decimal places.
 - `fmt_timedelta(value)`: Formats a timedelta value into a human-readable string (e.g., "2d 3h").
