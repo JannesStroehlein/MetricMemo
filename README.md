@@ -15,21 +15,21 @@ This tool provides a command-line interface (CLI) with the following commands:
 
 Some arguments are applicable to all commands:
 
-- `--template-path`: Path to the Jinja2 HTML template file relative to `./templates` (default: `weekly.html.jinja`).
-- `-t, --time-selection`: Time range for the report data (default: `7d`).
+- `--template-path`: Path to any Jinja2 HTML template file (absolute or relative to your current working directory). Default: `templates/weekly.html.jinja`.
+- `-t, --time`: Time range for the report data (default: `7d`).
 
 ### Example Commands
 
 Send an email report with a custom subject:
 
 ```bash
-uv run main.py send-email --subject-template "Custom Report - {{ date }}"
+uv run metric-memo send-email --subject-template "Custom Report - {{ date }}"
 ```
 
 Start the template development server on a specific port:
 
 ```bash
-uv run main.py template-dev-server --port 8080
+uv run metric-memo template-dev-server --port 8080
 ```
 
 ## Installation
@@ -50,7 +50,7 @@ uv sync
 Once the dependencies are installed, you can run the CLI with:
 
 ```bash
-uv run main.py [command] [options]
+uv run metric-memo [command] [options]
 ```
 
 ## Environment Variables
@@ -78,7 +78,7 @@ The tool requires the following environment variables to be set for email functi
 
 ## Jinja2 Template
 
-The email report is generated using a Jinja2 HTML template. You can customize the template to fit your reporting needs. The default template file is `weekly.html.jinja`.
+The email report is generated using a Jinja2 HTML template. You can use any template file on your system by passing its path to `--template-path`. The bundled file at `templates/weekly.html.jinja` is only a sample template.
 The template has access to the following variables:
 
 - `time_selection`: The time range selected for the report (e.g., `7d`). This can be used in queries to Prometheus and Loki.
@@ -114,8 +114,8 @@ I use this tool to generate a weekly and daily infrastructure report that includ
 First install the tool and set up the environment variables as described in the installation section. Then, I added the following lines to schedule the reports to my crontab using `crontab -e`:
 
 ```cron
-0 6 * * 1 cd ~/reporting && .venv/bin/python main.py -t 7d send-email --subject-template "Weekly Infrastructure Report - {{ date }}" >> ~/reporting/report.weekly.log 2>&1
-0 6 * * * cd ~/reporting && .venv/bin/python main.py -t 1d send-email --subject-template "Daily Infrastructure Report - {{ date }}" >> ~/reporting/report.daily.log 2>&1
+0 6 * * 1 cd ~/reporting && .venv/bin/metric-memo -t 7d send-email --subject-template "Weekly Infrastructure Report - {{ date }}" >> ~/reporting/report.weekly.log 2>&1
+0 6 * * * cd ~/reporting && .venv/bin/metric-memo -t 1d send-email --subject-template "Daily Infrastructure Report - {{ date }}" >> ~/reporting/report.daily.log 2>&1
 ```
 
 ### Troubleshooting

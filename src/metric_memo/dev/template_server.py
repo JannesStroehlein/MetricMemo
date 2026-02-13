@@ -1,27 +1,17 @@
-""""
-This module defines a simple HTTP server to render the email template for development/testing purposes.
-"""
-from http.server import HTTPServer, BaseHTTPRequestHandler
+from http.server import BaseHTTPRequestHandler, HTTPServer
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from metric_memo import MetricMemo
+    from src.metric_memo.app import MetricMemoApp
+
 
 class TemplateDevServer:
-    """
-    A simple HTTP server to render the email template for development/testing purposes.
-    This allows you to see how the email will look in a browser without actually sending it.
-    """
-    def __init__(self, app: "MetricMemo", template_path: str, port: int):
+    def __init__(self, app: "MetricMemoApp", template_path: str, port: int):
         self.app = app
         self.template_path = template_path
         self.port = port
 
     def start(self):
-        """
-        Start a simple HTTP server that renders the email template for development/testing purposes.
-        """
-
         app = self.app
         template_path = self.template_path
 

@@ -12,7 +12,7 @@ dependencies = [
 ]
 
 [project.scripts]
-metric-memo = "metric_memo:main"
+metric-memo = "src.metric_memo.cli:main"
 
 [build-system]
 requires = ["hatchling"]
