@@ -12,4 +12,7 @@ wheels/
 # Environment variables
 .env
 
+# VS Code settings
+.vscode/
+
 uv.lock
