@@ -26,9 +26,22 @@ jobs:
 
       - name: Python Semantic Release
         id: release
-        uses: python-semantic-release/python-semantic-release@v9.8.0
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          
+          # 1. Bump version, update changelog, commit, tag, and build (via 'uv build')
+          uvx --from python-semantic-release==9.8.0 python-semantic-release version
+          
+          # 2. Upload to GitHub Releases
+          uvx --from python-semantic-release==9.8.0 python-semantic-release publish
+
+          # 3. Check if a build artifact was created (implies a release occurred)
+          if [ -d "dist" ] && [ "$(ls -A dist)" ]; then
+             echo "released=true" >> $GITHUB_OUTPUT
+          fi
 
       - name: Publish to PyPI
         if: steps.release.outputs.released == 'true'
