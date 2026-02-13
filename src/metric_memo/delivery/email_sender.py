@@ -1,15 +1,33 @@
+"""
+This module defines the EmailSender class, 
+which is responsible for sending emails using SMTP settings.
+"""
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import smtplib
 
-from src.metric_memo.config.settings import SmtpSettings
+from metric_memo.config.settings import SmtpSettings
 
 
 class EmailSender:
+    """
+    A class responsible for sending emails using SMTP settings.
+    """
     def __init__(self, smtp_settings: SmtpSettings):
         self.smtp_settings = smtp_settings
 
     def send_html(self, recipients: list[str], subject: str, html_body: str):
+        """
+        Sends an HTML email to the specified recipients with the given subject and body.
+        
+        :param self: Description
+        :param recipients: Description
+        :type recipients: list[str]
+        :param subject: Description
+        :type subject: str
+        :param html_body: Description
+        :type html_body: str
+        """
         msg = MIMEMultipart()
         msg["Subject"] = subject
         msg["From"] = f"{self.smtp_settings.from_name} <{self.smtp_settings.user}>"

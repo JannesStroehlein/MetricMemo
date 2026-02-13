@@ -1,6 +1,10 @@
+"""
+This module provides functions to build the global context and filters 
+for Jinja2 templates used in the Metric Memo application.
+"""
 from datetime import datetime, timedelta, timezone
 
-from src.metric_memo.templating.filters import (
+from metric_memo.templating.filters import (
     format_bytes,
     format_percent,
     format_timedelta,

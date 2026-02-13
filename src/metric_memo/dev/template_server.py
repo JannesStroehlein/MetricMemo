@@ -1,18 +1,18 @@
+"""
+This module implements a simple development server for previewing the rendered HTML templates.
+"""
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from src.metric_memo.app import MetricMemoApp
+from typing import Callable
 
 
 class TemplateDevServer:
-    def __init__(self, app: "MetricMemoApp", template_path: str, port: int):
-        self.app = app
+    def __init__(self, render_html: Callable[[str], str], template_path: str, port: int):
+        self.render_html = render_html
         self.template_path = template_path
         self.port = port
 
     def start(self):
-        app = self.app
+        render_html = self.render_html
         template_path = self.template_path
 
         class RequestHandler(BaseHTTPRequestHandler):
@@ -20,7 +20,7 @@ class TemplateDevServer:
                 self.send_response(200)
                 self.send_header("Content-type", "text/html")
                 self.end_headers()
-                html = app.render_html(template_path)
+                html = render_html(template_path)
                 self.wfile.write(html.encode("utf-8"))
 
         server_address = ("", self.port)

@@ -1,3 +1,10 @@
+"""
+This module provides the TemplateRenderer class, 
+which is responsible for rendering Jinja2 templates from files or strings. 
+
+It supports loading templates from absolute or relative paths and allows 
+for custom global variables and filters to be used in the templates.
+"""
 from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader
