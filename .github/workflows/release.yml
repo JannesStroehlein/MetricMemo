@@ -33,10 +33,10 @@ jobs:
           git config --global user.email "github-actions@github.com"
           
           # 1. Bump version, update changelog, commit, tag, and build (via 'uv build')
-          uvx --from python-semantic-release==9.8.0 python-semantic-release version
+          uvx --from python-semantic-release==9.8.0 semantic-release version
           
           # 2. Upload to GitHub Releases
-          uvx --from python-semantic-release==9.8.0 python-semantic-release publish
+          uvx --from python-semantic-release==9.8.0 semantic-release publish
 
           # 3. Check if a build artifact was created (implies a release occurred)
           if [ -d "dist" ] && [ "$(ls -A dist)" ]; then
