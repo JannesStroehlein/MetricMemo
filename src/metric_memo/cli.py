@@ -6,7 +6,7 @@ from .commands.template_preview import run_template_preview
 from .config.settings import Settings
 
 
-def main():
+def main() -> int:
     parser = argparse.ArgumentParser(prog="metric-memo")
     parser.add_argument(
         "-t",
@@ -43,13 +43,13 @@ def main():
         app_settings = Settings()
     except Exception as e:
         print(f"Framework Error: Failed to load settings. {e}")
-        raise SystemExit(1) from e
+        return 1
 
     app = MetricMemoApp(app_settings, args.time)
 
     if not args.command:
         parser.print_help()
-        return
+        return 0
 
     if args.command == "send-email":
         try:
@@ -57,10 +57,15 @@ def main():
             print("Report sent!")
         except Exception as e:
             print(f"Error sending email: {e}")
-        return
+            return 1
+        return 0
 
     if args.command == "template-dev-server":
         try:
             run_template_preview(app, args.template_path, args.port)
         except KeyboardInterrupt:
             print("\nServer stopped.")
+            return 130
+        return 0
+
+    return 2
